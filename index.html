@@ -35,6 +35,8 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="card stat"><span>استلمنا من العملاء</span><b id="kClientPaid" class="green">0.000 د.ك</b></div>
 <div class="card stat"><span>متبقي على العملاء</span><b id="kClientRemain" class="red">0.000 د.ك</b></div>
 </div>
+<div class="section"><h2>الأقساط القادمة من العملاء</h2></div>
+<div id="upcomingInstallments" class="providerGrid"></div>
 <div class="section"><h2>مستحقات حسب مقدم الخدمة</h2><button class="btn soft" onclick="showPage('providers')">كل المقدمين</button></div>
 <div class="card" style="margin-bottom:11px"><div class="field"><label>فلتر مقدم الخدمة</label><select id="dashboardProviderFilter" onchange="renderDashboard()"><option value="all">كل مقدمي الخدمة</option></select></div></div>
 <div id="dashboardProviders" class="providerGrid"></div>
@@ -62,7 +64,7 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="hint">هذي مواعيد مستقبلية فقط، ما تنحسب مدفوعة إلا لما تسجلين دفعة فعلية.</div>
 <div id="installmentRows"></div>
 </div>
-<div class="field"><label>استلمنا منه مبلغ الآن؟</label><select id="cClientPaid"><option value="unpaid">لا</option><option value="paid">نعم - دفع كامل الآن</option></select></div>
+<div class="field"><label>استلمنا منه مبلغ الآن؟</label><select id="cClientPaid"><option value="unpaid">لا</option><option value="paid">نعم - دفع كامل الآن</option></select><div class="hint" id="payNowHint">إذا اخترتي أقساط، سجلي مواعيد الأقساط هنا، وبعد حفظ العملية سجلي أي دفعة فعلية من زر «دفعة عميل».</div></div>
 <div class="field"><label>طريقة دفع العميل</label><select id="cPayMethod"><option>رابط دفع</option><option>KNET</option><option>كاش</option><option>كريدت كارد</option><option>تحويل</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
 <div class="field full"><label>ملاحظة السداد</label><input id="cPaymentNote" placeholder="مثال: يدفع نهاية الشهر / أول قسط 20 د.ك"></div>
 <div class="field full"><label>ملاحظات</label><textarea id="cNotes" rows="3" placeholder="أي تفاصيل مهمة عن الحالة"></textarea></div>
