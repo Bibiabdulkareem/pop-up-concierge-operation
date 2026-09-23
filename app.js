@@ -184,14 +184,30 @@ function exportProviderReport(id){
  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=('PawApp-'+p.name+'-report.csv').replace(/\s+/g,'-');document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-async function openSettlement(id){
+function openClientPayment(id){
+ const x=db.cases.find(v=>String(v.id)===String(id));if(!x)return;
+ if(clientRem(x)<=0.0001){alert('العميل مسدد بالكامل');return}
+ document.getElementById('cpCase').value=id;
+ document.getElementById('cpAmount').value=clientRem(x).toFixed(3);
+ document.getElementById('cpDate').value=new Date().toISOString().slice(0,10);
+ document.getElementById('cpMethod').value=x.payment_method||'KNET';
+ document.getElementById('cpNote').value='';
+ document.getElementById('cpSummary').textContent='الإجمالي '+money(x.total_amount)+' — المدفوع '+money(clientPaidAmt(x))+' — المتبقي '+money(clientRem(x));
+ document.getElementById('clientPayModal').classList.add('show');
+}
+async function saveClientPayment(){
+ const id=document.getElementById('cpCase').value,x=db.cases.find(v=>String(v.id)===String(id)),a=Number(document.getElementById('cpAmount').value||0);
+ if(!x||a<=0){alert('أدخلي مبلغ صحيح');return}
+ if(a>clientRem(x)+0.0001){alert('المبلغ أكبر من المتبقي على العميل');return}
+ try{
+  await api('client_payments',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({case_id:Number(id),amount:a,paid_at:document.getElementById('cpDate').value,method:document.getElementById('cpMethod').value,note:document.getElementById('cpNote').value.trim()||null})});
+  const newPaid=clientPaidAmt(x)+a;
+  await api('cases?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({client_paid:newPaid>=Number(x.total_amount)-0.0001,payment_method:document.getElementById('cpMethod').value})});
+  closeModal('clientPayModal');await loadData();toast('تم تسجيل دفعة العميل');
+ }catch(e){console.error(e);alert('تعذر تسجيل دفعة العميل')}
+}
+function openSettlement(id){
  const c=db.cases.find(x=>String(x.id)===String(id));if(!c)return;
- if(!c.client_paid){
-  const ok=confirm('تأكيد أن العميل دفع المبلغ كامل؟');if(!ok)return;
-  const method=prompt('طريقة دفع العميل: كاش / KNET / كريدت كارد / تحويل','KNET')||'KNET';
-  try{await api('cases?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({client_paid:true,payment_method:method})});await loadData();toast('تم تأكيد دفع العميل بالكامل')}catch(e){console.error(e);alert('تعذر تحديث دفع العميل')}
-  return;
- }
  if(rem(c)<=0.0001){alert('مستحق مقدم الخدمة مسدد بالكامل');return}
  document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show');
 }
@@ -203,4 +219,5 @@ async function saveSettlement(){
 
 function renderAll(){renderDashboard();renderProviders();renderStaff();renderCases();fillProviders();fillStaff()}
 document.getElementById('cDate').value=new Date().toISOString().slice(0,10);
+togglePaymentPlan();
 loadData();
