@@ -151,18 +151,46 @@ function calcCase(){
  document.getElementById('calcTotal').textContent=money(total);document.getElementById('calcPaw').textContent=money(pw);document.getElementById('calcDue').textContent=money(du);document.getElementById('calcRemain').textContent=money(du);
 }
 
-function togglePaymentPlan(){document.getElementById('installmentsWrap').style.display=document.getElementById('cPaymentPlan').value==='installment'?'flex':'none'}
+function togglePaymentPlan(){
+ const on=document.getElementById('cPaymentPlan').value==='installment';
+ document.getElementById('installmentsWrap').style.display=on?'flex':'none';
+ document.getElementById('installmentScheduleWrap').style.display=on?'flex':'none';
+ if(on)buildInstallmentRows(); else document.getElementById('installmentRows').innerHTML='';
+}
+function buildInstallmentRows(){
+ const n=Math.max(0,Number(document.getElementById('cInstallments').value||0));
+ const wrap=document.getElementById('installmentRows'); if(!wrap)return;
+ const old=[...wrap.querySelectorAll('.installmentRow')].map(r=>({amount:r.querySelector('.instAmount')?.value||'',date:r.querySelector('.instDate')?.value||''}));
+ wrap.innerHTML='';
+ for(let i=0;i<n;i++){
+   const d=document.createElement('div');d.className='grid2 installmentRow';d.style.marginTop='8px';
+   d.innerHTML='<div class="field"><label>القسط '+(i+1)+' - المبلغ</label><input class="instAmount" type="number" min="0" step="0.001" placeholder="0.000" value="'+(old[i]?.amount||'')+'"></div><div class="field"><label>تاريخ الاستحقاق</label><input class="instDate" type="date" value="'+(old[i]?.date||'')+'"></div>';
+   wrap.appendChild(d);
+ }
+}
 async function saveCase(){
  const client=document.getElementById('cClient').value.trim(),employeeId=document.getElementById('cStaff').value,providerId=document.getElementById('cProvider').value,service=document.getElementById('cService').value,base=Number(document.getElementById('cAmount').value||0),feeType=document.getElementById('cFeeType').value,feeValue=Number(document.getElementById('cCommission').value||0),paymentPlan=document.getElementById('cPaymentPlan').value,installments=paymentPlan==='installment'?Number(document.getElementById('cInstallments').value||0):null,paymentNote=document.getElementById('cPaymentNote').value.trim();
  if(!client||!employeeId||!providerId||!service||base<=0){alert('كملي اسم العميل، الموظف، مقدم الخدمة، الخدمة والمبلغ.');return}
  const total=feeType==='fixed'?base+feeValue:base,pw=feeType==='fixed'?feeValue:total*feeValue/100,providerAmount=total-pw;
+ let schedule=[];
+ if(paymentPlan==='installment'){
+   const rows=[...document.querySelectorAll('.installmentRow')];
+   if(!rows.length){alert('حددي عدد الأقساط وجدولها');return}
+   schedule=rows.map((r,i)=>({installment_no:i+1,amount:Number(r.querySelector('.instAmount').value||0),due_date:r.querySelector('.instDate').value}));
+   if(schedule.some(x=>x.amount<=0||!x.due_date)){alert('كملي مبلغ وتاريخ كل قسط');return}
+   const sum=schedule.reduce((a,x)=>a+x.amount,0);
+   if(Math.abs(sum-total)>0.001){alert('مجموع الأقساط لازم يساوي إجمالي العميل '+money(total));return}
+ }
  try{
   const inserted=await api('cases',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({service_date:document.getElementById('cDate').value||new Date().toISOString().slice(0,10),client_name:client,client_phone:document.getElementById('cPhone').value.trim(),employee_id:employeeId,provider_id:providerId,service_name:service,fee_type:feeType,fee_value:feeValue,total_amount:total,pawapp_amount:pw,provider_amount:providerAmount,client_paid:false,payment_method:document.getElementById('cPayMethod').value,client_payment_plan:paymentPlan,installments_count:installments||null,client_payment_note:paymentNote||null,notes:document.getElementById('cNotes').value.trim()})});
+  if(paymentPlan==='installment' && schedule.length){
+    await api('installment_schedule',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(schedule.map(x=>({...x,case_id:inserted[0].id})))});
+  }
   if(document.getElementById('cClientPaid').value==='paid' && paymentPlan==='full'){
     await api('client_payments',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({case_id:inserted[0].id,amount:total,paid_at:document.getElementById('cDate').value||new Date().toISOString().slice(0,10),method:document.getElementById('cPayMethod').value,note:paymentNote||null})});
     await api('cases?id=eq.'+encodeURIComponent(inserted[0].id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({client_paid:true})});
   }
-  ['cClient','cPhone','cAmount','cNotes','cPaymentNote','cInstallments'].forEach(id=>document.getElementById(id).value='');document.getElementById('cStaff').value='';document.getElementById('cProvider').value='';
+  ['cClient','cPhone','cAmount','cNotes','cPaymentNote','cInstallments'].forEach(id=>document.getElementById(id).value='');document.getElementById('installmentRows').innerHTML='';document.getElementById('cStaff').value='';document.getElementById('cProvider').value='';
   await loadData();showPage('cases');toast('تم حفظ العميل والعملية');
  }catch(e){console.error(e);alert('تعذر حفظ العملية')}
 }
