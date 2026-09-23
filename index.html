@@ -30,6 +30,8 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="card stat"><span>تم دفعه</span><b id="kPaid" class="green">0.000 د.ك</b></div>
 <div class="card stat"><span>متبقي علينا</span><b id="kRemain" class="red">0.000 د.ك</b></div>
 </div>
+<div class="section"><h2>مستحقات حسب مقدم الخدمة</h2><button class="btn soft" onclick="showPage('providers')">كل المقدمين</button></div>
+<div id="dashboardProviders" class="providerGrid"></div>
 <div class="section"><h2>آخر العمليات</h2><button class="btn soft" onclick="showPage('cases')">عرض الكل</button></div>
 <div class="table"><table><thead><tr><th>رقم</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>المبلغ</th><th>PawApp</th><th>الموظف</th><th>الحالة</th></tr></thead><tbody id="recent"></tbody></table></div>
 </section>
@@ -70,6 +72,10 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <section id="cases" class="page">
 <div class="title"><div><h1>العمليات والعملاء</h1><p>كل الحالات المسجلة وحالة التسوية</p></div><button class="btn yellow" onclick="openNewCase()">+ عميل جديد</button></div>
 <input id="caseSearch" class="search" placeholder="بحث باسم العميل، الشركة، الموظف أو Case ID..." oninput="renderCases()">
+<div class="grid2" style="margin-top:10px">
+<div class="field"><label>فلتر الحالة</label><select id="caseStatusFilter" onchange="renderCases()"><option value="all">كل الحالات</option><option value="pending">مستحق للمقدم</option><option value="partial">مسدد جزئي</option><option value="paid">مسدد للمقدم</option><option value="unpaid">العميل لم يدفع</option></select></div>
+<div class="field"><label>فلتر مقدم الخدمة</label><select id="caseProviderFilter" onchange="renderCases()"><option value="all">كل مقدمي الخدمة</option></select></div>
+</div>
 <div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي</th><th>الموظف</th><th>الحالة</th><th></th></tr></thead><tbody id="caseRows"></tbody></table></div>
 </section>
 </main>
@@ -140,6 +146,7 @@ function renderDashboard(){
  var sales=0,p=0,d=0,paid=0;
  db.cases.forEach(function(c){sales+=c.amount;p+=paw(c);d+=due(c);paid+=(c.providerPaid||0)});
  document.getElementById('kSales').textContent=money(sales);document.getElementById('kPaw').textContent=money(p);document.getElementById('kDue').textContent=money(d);document.getElementById('kPaid').textContent=money(paid);document.getElementById('kRemain').textContent=money(Math.max(0,d-paid));
+ var ph='';db.providers.forEach(function(pr){var cs=db.cases.filter(function(x){return x.providerId===pr.id}),total=0,du=0,pd=0,rm=0;cs.forEach(function(x){total+=x.amount;du+=due(x);pd+=(x.providerPaid||0);rm+=rem(x)});if(!cs.length)return;ph+='<div class="card provider"><h3>'+esc(pr.name)+'</h3><div class="miniGrid"><div class="mini"><span>العملاء/العمليات</span><b>'+cs.length+'</b></div><div class="mini"><span>مستحق له</span><b>'+money(du)+'</b></div><div class="mini"><span>متبقي علينا</span><b class="'+(rm>0?'red':'green')+'">'+money(rm)+'</b></div></div><div class="actions"><button class="btn soft" onclick="providerCases(\''+pr.id+'\')">التفاصيل</button><button class="btn soft" onclick="exportProviderReport(\''+pr.id+'\')">تقرير</button></div></div>'});document.getElementById('dashboardProviders').innerHTML=ph||'<div class="card">ما في عمليات مسجلة للحين.</div>';
  var a=db.cases.slice().reverse().slice(0,6),h='';
  a.forEach(function(c){var pr=byProvider(c.providerId),s=st(c);h+='<tr><td>'+c.id+'</td><td>'+esc(c.client)+'</td><td>'+esc(pr.name)+'</td><td>'+esc(c.service)+'</td><td>'+money(c.amount)+'</td><td>'+money(paw(c))+'</td><td>'+esc(c.staff)+'</td><td><span class="status '+s[1]+'">'+s[0]+'</span></td></tr>'});
  document.getElementById('recent').innerHTML=h||'<tr><td colspan="8">لا توجد عمليات</td></tr>';
@@ -155,12 +162,14 @@ function renderProviders(){
 }
 function renderCases(){
  var q=(document.getElementById('caseSearch').value||'').toLowerCase(),h='';
- db.cases.slice().reverse().forEach(function(c){var pr=byProvider(c.providerId),hay=[c.id,c.client,c.phone,c.staff,pr.name,c.service].join(' ').toLowerCase();if(q&&!hay.includes(q))return;var s=st(c);
+ var sf=document.getElementById('caseStatusFilter')?document.getElementById('caseStatusFilter').value:'all';
+ var pf=document.getElementById('caseProviderFilter')?document.getElementById('caseProviderFilter').value:'all';
+ db.cases.slice().reverse().forEach(function(c){var pr=byProvider(c.providerId),hay=[c.id,c.client,c.phone,c.staff,pr.name,c.service].join(' ').toLowerCase();if(q&&!hay.includes(q))return;var s=st(c);if(sf!=='all'&&s[1]!==sf)return;if(pf!=='all'&&c.providerId!==pf)return;
  h+='<tr><td>'+c.id+'</td><td>'+c.date+'</td><td>'+esc(c.client)+'</td><td>'+esc(pr.name)+'</td><td>'+esc(c.service)+'</td><td>'+money(c.amount)+'</td><td>'+money(paw(c))+'</td><td>'+money(due(c))+'</td><td>'+money(c.providerPaid||0)+'</td><td>'+money(rem(c))+'</td><td>'+esc(c.staff)+'</td><td><span class="status '+s[1]+'">'+s[0]+'</span></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement(\''+c.id+'\')">دفعة</button></td></tr>';
  });
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
-function fillProviders(){var s=document.getElementById('cProvider');s.innerHTML='<option value="">اختاري مقدم الخدمة</option>';db.providers.forEach(function(p){s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>'});providerChanged()}
+function fillProviders(){var s=document.getElementById('cProvider');s.innerHTML='<option value="">اختاري مقدم الخدمة</option>';db.providers.forEach(function(p){s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>'});providerChanged();var f=document.getElementById('caseProviderFilter');if(f){var keep=f.value;f.innerHTML='<option value="all">كل مقدمي الخدمة</option>';db.providers.forEach(function(p){f.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>'});if([].slice.call(f.options).some(function(o){return o.value===keep}))f.value=keep}}
 function fillStaff(){var s=document.getElementById('cStaff');if(!s)return;s.innerHTML='<option value="">اختاري الموظف المسؤول</option>';db.staff.forEach(function(n){s.innerHTML+='<option>'+esc(n)+'</option>'})}
 function renderStaff(){var h='';db.staff.forEach(function(n){h+='<div class="card provider"><h3>'+esc(n)+'</h3><p>موظف PawApp / مسؤول عن تسجيل الطلبات</p><div class="actions"><button class="btn danger" onclick="deleteStaff(\''+esc(n).replace(/'/g,"\\'")+'\')">حذف</button></div></div>'});document.getElementById('staffList').innerHTML=h||'<div class="card">ما في موظفين مسجلين. أضيفي أسماء الفريق أول.</div>'}
 function openStaff(){document.getElementById('staffModal').classList.add('show')}
@@ -179,7 +188,8 @@ function closeModal(id){document.getElementById(id).classList.remove('show')}
 function typeChanged(){document.getElementById('pCatWrap').style.display=document.getElementById('pType').value==='company'?'flex':'none'}
 function saveProvider(){var name=document.getElementById('pName').value.trim();if(!name){alert('اكتبي اسم مقدم الخدمة');return}var sv=document.getElementById('pServices').value.split(',').map(function(x){return x.trim()}).filter(Boolean);if(!sv.length){alert('أضيفي خدمة واحدة على الأقل لهذا المقدم');return}db.providers.push({id:'P'+Date.now(),type:document.getElementById('pType').value,category:document.getElementById('pCategory').value,name:name,phone:document.getElementById('pPhone').value.trim(),commission:Number(document.getElementById('pCommission').value||0),services:sv});document.getElementById('pName').value='';document.getElementById('pPhone').value='';document.getElementById('pServices').value='';closeModal('providerModal');persist();toast('تمت إضافة مقدم الخدمة')}
 function deleteProvider(id){if(db.cases.some(function(c){return c.providerId===id})){alert('ما نقدر نحذفه لأن عنده عمليات مسجلة.');return}if(confirm('حذف مقدم الخدمة؟')){db.providers=db.providers.filter(function(p){return p.id!==id});persist()}}
-function providerCases(id){var p=byProvider(id);showPage('cases');document.getElementById('caseSearch').value=p.name;renderCases()}
+function providerCases(id){showPage('cases');document.getElementById('caseSearch').value='';if(document.getElementById('caseProviderFilter'))document.getElementById('caseProviderFilter').value=id;renderCases()}
+function exportProviderReport(id){var p=byProvider(id),rows=db.cases.filter(function(c){return c.providerId===id});if(!rows.length){alert('ما في عمليات لهذا المقدم');return}var csv='Case ID,Date,Client,Phone,Service,Amount KD,PawApp KD,Provider Due KD,Paid to Provider KD,Remaining KD,Staff,Status\n';rows.forEach(function(c){var s=st(c);csv+=[c.id,c.date,c.client,c.phone||'',c.service,c.amount.toFixed(3),paw(c).toFixed(3),due(c).toFixed(3),(c.providerPaid||0).toFixed(3),rem(c).toFixed(3),c.staff,s[0]].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',')+'\n'});var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=('PawApp-'+p.name+'-report.csv').replace(/\s+/g,'-');document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(url)},1000);toast('تم تجهيز تقرير '+p.name)}
 function openSettlement(id){var c=db.cases.find(function(x){return x.id===id});if(!c)return;document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show')}
 function saveSettlement(){var id=document.getElementById('sCase').value,c=db.cases.find(function(x){return x.id===id}),a=Number(document.getElementById('sAmount').value||0);if(!c||a<=0){alert('أدخلي مبلغ صحيح');return}if(a>rem(c)+0.0001){alert('المبلغ أكبر من المتبقي للمقدم');return}c.providerPaid=(c.providerPaid||0)+a;c.settlements=c.settlements||[];c.settlements.push({amount:a,date:document.getElementById('sDate').value,ref:document.getElementById('sRef').value.trim(),method:document.getElementById('sMethod').value});document.getElementById('sRef').value='';closeModal('settleModal');persist();toast('تم تسجيل الدفعة')}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]})}
