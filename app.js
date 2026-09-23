@@ -13,6 +13,7 @@ function rem(c){return Math.max(0,due(c)-Number(c.providerPaid||0))}
 function clientPaidAmt(c){const x=Number(c.clientPaidAmount||0);return x>0?x:(c.client_paid?Number(c.total_amount||0):0)}
 function clientRem(c){return Math.max(0,Number(c.total_amount||0)-clientPaidAmt(c))}
 function planLabel(c){if(c.client_payment_plan==='installment')return 'أقساط'+(c.installments_count?' ('+c.installments_count+')':'');if(c.client_payment_plan==='later')return 'لاحقًا';return 'دفع كامل'}
+function nextInstallment(c){const s=(c.schedule||[]).filter(x=>new Date(x.due_date+'T00:00:00')>=new Date(new Date().toISOString().slice(0,10)+'T00:00:00')).sort((a,b)=>a.due_date.localeCompare(b.due_date));return s[0]||null}
 function st(c){if(clientRem(c)>0.0001)return ['العميل لم يكمل السداد','unpaid'];if(rem(c)<=0.0001)return ['مسدد للمقدم','paid'];if(Number(c.providerPaid||0)>0)return ['مسدد جزئي','partial'];return ['مستحق للمقدم','pending']}
 
 async function api(path,opts={}){
@@ -65,12 +66,16 @@ function openNewCase(){showPage('newcase');fillProviders();fillStaff();document.
 
 function renderDashboard(){
  let sales=0,p=0,d=0,paid=0;
- db.cases.forEach(c=>{sales+=c.amount;p+=paw(c);d+=due(c);paid+=Number(c.providerPaid||0)});
+ let clientDue=0,clientPaid=0,clientRemain=0;
+ db.cases.forEach(c=>{sales+=c.amount;p+=paw(c);d+=due(c);paid+=Number(c.providerPaid||0);clientDue+=Number(c.total_amount||0);clientPaid+=clientPaidAmt(c);clientRemain+=clientRem(c)});
  document.getElementById('kSales').textContent=money(sales);
  document.getElementById('kPaw').textContent=money(p);
  document.getElementById('kDue').textContent=money(d);
  document.getElementById('kPaid').textContent=money(paid);
  document.getElementById('kRemain').textContent=money(Math.max(0,d-paid));
+ document.getElementById('kClientDue').textContent=money(clientDue);
+ document.getElementById('kClientPaid').textContent=money(clientPaid);
+ document.getElementById('kClientRemain').textContent=money(clientRemain);
  const pf=document.getElementById('dashboardProviderFilter')?.value||'all';
  let ph='';
  db.providers.forEach(pr=>{
@@ -107,7 +112,7 @@ function renderCases(){
  db.cases.slice().reverse().forEach(c=>{
   const pr=byProvider(c.providerId),hay=['PAW-'+String(c.id).padStart(4,'0'),c.client_name,c.client_phone,c.staff,pr.name,c.service].join(' ').toLowerCase(),s=st(c);
   if(q&&!hay.includes(q))return;if(sf!=='all'&&s[1]!==sf)return;if(pf!=='all'&&c.providerId!==pf)return;
-  h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${planLabel(c)}${c.client_payment_note?'<br><span class="hint">'+esc(c.client_payment_note)+'</span>':''}</td><td>${money(clientPaidAmt(c))}</td><td>${money(clientRem(c))}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openClientPayment('${c.id}')">دفعة عميل</button></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة للمقدم</button></td></tr>`;
+  const ni=nextInstallment(c);h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${planLabel(c)}${c.client_payment_note?'<br><span class="hint">'+esc(c.client_payment_note)+'</span>':''}</td><td>${money(clientPaidAmt(c))}</td><td>${money(clientRem(c))}</td><td>${ni?money(ni.amount)+'<br><span class="hint">'+ni.due_date+'</span>':'—'}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openClientPayment('${c.id}')">دفعة عميل</button></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة للمقدم</button></td></tr>`;
  });
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
