@@ -13,7 +13,16 @@ function rem(c){return Math.max(0,due(c)-Number(c.providerPaid||0))}
 function clientPaidAmt(c){const x=Number(c.clientPaidAmount||0);return x>0?x:(c.client_paid?Number(c.total_amount||0):0)}
 function clientRem(c){return Math.max(0,Number(c.total_amount||0)-clientPaidAmt(c))}
 function planLabel(c){if(c.client_payment_plan==='installment')return 'أقساط'+(c.installments_count?' ('+c.installments_count+')':'');if(c.client_payment_plan==='later')return 'لاحقًا';return 'دفع كامل'}
-function nextInstallment(c){const s=(c.schedule||[]).filter(x=>new Date(x.due_date+'T00:00:00')>=new Date(new Date().toISOString().slice(0,10)+'T00:00:00')).sort((a,b)=>a.due_date.localeCompare(b.due_date));return s[0]||null}
+function nextInstallment(c){
+ const s=(c.schedule||[]).slice().sort((a,b)=>a.installment_no-b.installment_no);
+ let paid=clientPaidAmt(c);
+ for(const x of s){
+   const a=Number(x.amount||0);
+   if(paid>=a-0.0001){paid-=a;continue}
+   return {...x,remaining_amount:Math.max(0,a-paid)};
+ }
+ return null;
+}
 function st(c){if(clientRem(c)>0.0001)return ['العميل لم يكمل السداد','unpaid'];if(rem(c)<=0.0001)return ['مسدد للمقدم','paid'];if(Number(c.providerPaid||0)>0)return ['مسدد جزئي','partial'];return ['مستحق للمقدم','pending']}
 
 async function api(path,opts={}){
@@ -76,6 +85,10 @@ function renderDashboard(){
  document.getElementById('kClientDue').textContent=money(clientDue);
  document.getElementById('kClientPaid').textContent=money(clientPaid);
  document.getElementById('kClientRemain').textContent=money(clientRemain);
+ let upcoming=[];
+ db.cases.forEach(c=>{const n=nextInstallment(c);if(n)upcoming.push({client:c.client_name,date:n.due_date,amount:n.remaining_amount,caseId:c.id})});
+ upcoming.sort((a,b)=>a.date.localeCompare(b.date));
+ document.getElementById('upcomingInstallments').innerHTML=upcoming.slice(0,6).map(x=>'<div class="card provider"><h3>'+esc(x.client)+'</h3><p>PAW-'+String(x.caseId).padStart(4,'0')+'</p><div class="miniGrid"><div class="mini"><span>المبلغ</span><b>'+money(x.amount)+'</b></div><div class="mini"><span>الاستحقاق</span><b>'+x.date+'</b></div><div class="mini"><span>الحالة</span><b>قادم</b></div></div></div>').join('')||'<div class="card">ما في أقساط قادمة.</div>';
  const pf=document.getElementById('dashboardProviderFilter')?.value||'all';
  let ph='';
  db.providers.forEach(pr=>{
@@ -112,7 +125,7 @@ function renderCases(){
  db.cases.slice().reverse().forEach(c=>{
   const pr=byProvider(c.providerId),hay=['PAW-'+String(c.id).padStart(4,'0'),c.client_name,c.client_phone,c.staff,pr.name,c.service].join(' ').toLowerCase(),s=st(c);
   if(q&&!hay.includes(q))return;if(sf!=='all'&&s[1]!==sf)return;if(pf!=='all'&&c.providerId!==pf)return;
-  const ni=nextInstallment(c);h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${planLabel(c)}${c.client_payment_note?'<br><span class="hint">'+esc(c.client_payment_note)+'</span>':''}</td><td>${money(clientPaidAmt(c))}</td><td>${money(clientRem(c))}</td><td>${ni?money(ni.amount)+'<br><span class="hint">'+ni.due_date+'</span>':'—'}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openClientPayment('${c.id}')">دفعة عميل</button></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة للمقدم</button></td></tr>`;
+  const ni=nextInstallment(c);h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${planLabel(c)}${c.client_payment_note?'<br><span class="hint">'+esc(c.client_payment_note)+'</span>':''}</td><td>${money(clientPaidAmt(c))}</td><td>${money(clientRem(c))}</td><td>${ni?money(ni.remaining_amount)+'<br><span class="hint">'+ni.due_date+'</span>':'—'}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openClientPayment('${c.id}')">دفعة عميل</button></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة للمقدم</button></td></tr>`;
  });
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
@@ -155,7 +168,8 @@ function togglePaymentPlan(){
  const on=document.getElementById('cPaymentPlan').value==='installment';
  document.getElementById('installmentsWrap').style.display=on?'flex':'none';
  document.getElementById('installmentScheduleWrap').style.display=on?'flex':'none';
- if(on)buildInstallmentRows(); else document.getElementById('installmentRows').innerHTML='';
+ const paidSel=document.getElementById('cClientPaid');
+ if(on){paidSel.value='unpaid';paidSel.disabled=true;buildInstallmentRows()}else{paidSel.disabled=false;document.getElementById('installmentRows').innerHTML=''}
 }
 function buildInstallmentRows(){
  const n=Math.max(0,Number(document.getElementById('cInstallments').value||0));
@@ -230,16 +244,19 @@ function openClientPayment(id){
  document.getElementById('cpSummary').textContent='الإجمالي '+money(x.total_amount)+' — المدفوع '+money(clientPaidAmt(x))+' — المتبقي '+money(clientRem(x));
  document.getElementById('clientPayModal').classList.add('show');
 }
+let clientPaymentSaving=false;
 async function saveClientPayment(){
+ if(clientPaymentSaving)return;
  const id=document.getElementById('cpCase').value,x=db.cases.find(v=>String(v.id)===String(id)),a=Number(document.getElementById('cpAmount').value||0);
  if(!x||a<=0){alert('أدخلي مبلغ صحيح');return}
  if(a>clientRem(x)+0.0001){alert('المبلغ أكبر من المتبقي على العميل');return}
  try{
+  clientPaymentSaving=true;
   await api('client_payments',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({case_id:Number(id),amount:a,paid_at:document.getElementById('cpDate').value,method:document.getElementById('cpMethod').value,note:document.getElementById('cpNote').value.trim()||null})});
   const newPaid=clientPaidAmt(x)+a;
   await api('cases?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({client_paid:newPaid>=Number(x.total_amount)-0.0001,payment_method:document.getElementById('cpMethod').value})});
   closeModal('clientPayModal');await loadData();toast('تم تسجيل دفعة العميل');
- }catch(e){console.error(e);alert('تعذر تسجيل دفعة العميل')}
+ }catch(e){console.error(e);alert('تعذر تسجيل دفعة العميل')}finally{clientPaymentSaving=false}
 }
 function openSettlement(id){
  const c=db.cases.find(x=>String(x.id)===String(id));if(!c)return;
