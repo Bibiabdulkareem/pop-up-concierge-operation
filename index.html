@@ -8,7 +8,7 @@
 <style>
 :root{--blue:#0c3b78;--blue2:#082b59;--yellow:#ffd400;--bg:#f4f7fb;--white:#fff;--text:#10233d;--muted:#6f8094;--line:#e3e9f0;--green:#16834f;--red:#c9344b;--orange:#b9760c}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text)}
-button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-height:100vh}.top{background:var(--blue);color:white;padding:12px 14px;position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:11px;box-shadow:0 3px 14px #0b315b33}.logo{width:48px;height:48px;border-radius:13px;object-fit:cover;background:white}.brand{line-height:1.25}.brand b{font-size:17px}.brand small{display:block;opacity:.78;font-size:11px}.top .sp{flex:1}.main{padding:15px 13px 94px}.page{display:none}.page.active{display:block}.title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 0 14px}.title h1{font-size:22px;margin:0}.title p{font-size:12px;color:var(--muted);margin:4px 0 0}.btn{border:0;border-radius:12px;padding:11px 13px;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:white}.yellow{background:var(--yellow);color:#122b4d}.soft{background:#eaf0f7;color:var(--blue)}.danger{background:#fff0f2;color:var(--red)}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 5px 18px #1735540b}.stat span{display:block;font-size:11px;color:var(--muted)}.stat b{display:block;font-size:20px;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.section{display:flex;justify-content:space-between;align-items:center;margin:20px 0 9px}.section h2{font-size:16px;margin:0}.table{overflow:auto;background:white;border:1px solid var(--line);border-radius:15px}table{border-collapse:collapse;width:100%;min-width:820px}th,td{padding:11px 9px;border-bottom:1px solid #edf1f5;text-align:right;font-size:12px;white-space:nowrap}th{background:#f8fafc;color:#5f7082;font-size:11px}.status{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700}.paid{background:#e8f8ef;color:#11723f}.pending{background:#fff2d8;color:#996108}.partial{background:#eaf0ff;color:#365ba5}.unpaid{background:#ffedf0;color:#ab2940}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#5b6d81}.field input,.field select,.field textarea{border:1px solid #d9e2ec;border-radius:11px;padding:12px;background:white;outline:none;color:var(--text)}.field input:focus,.field select:focus,.field textarea:focus{border-color:#91acd0;box-shadow:0 0 0 3px #0c3b7812}.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;background:#f6f9fd;border:1px dashed #adc3df;border-radius:14px;padding:12px;margin-top:12px}.calc span{font-size:10px;color:var(--muted);display:block}.calc b{font-size:17px;color:var(--blue);display:block;margin-top:4px}.providerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.provider h3{margin:0 0 5px;font-size:16px}.provider p{font-size:11px;color:var(--muted);margin:4px 0}.miniGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}.mini{background:#f7f9fc;border-radius:10px;padding:8px}.mini span{font-size:9px;color:var(--muted);display:block}.mini b{font-size:12px;display:block;margin-top:3px}.actions{display:flex;gap:7px;margin-top:10px}.actions .btn{flex:1;padding:8px;font-size:11px}.search{width:100%;border:1px solid var(--line);background:white;border-radius:12px;padding:11px}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:40;padding-bottom:max(6px,env(safe-area-inset-bottom));box-shadow:0 -5px 18px #1639570d}.nav{border:0;background:white;padding:10px 3px;color:#718196;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}.nav b{font-size:18px}.nav.active{color:var(--blue);font-weight:800}.fab{position:fixed;left:14px;bottom:78px;width:58px;height:58px;border:0;border-radius:18px;background:var(--yellow);font-size:30px;color:#173251;box-shadow:0 8px 24px #0c3b7833;z-index:45}.modalBg{display:none;position:fixed;inset:0;background:#06182f70;z-index:80;align-items:flex-end;justify-content:center}.modalBg.show{display:flex}.modal{background:white;width:100%;max-width:700px;border-radius:23px 23px 0 0;padding:16px;max-height:88vh;overflow:auto}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalHead h3{margin:0}.close{border:0;background:#edf2f7;width:35px;height:35px;border-radius:50%;font-size:20px}.hint{font-size:11px;color:var(--muted);line-height:1.7}.toast{position:fixed;top:76px;left:50%;transform:translateX(-50%);background:#102d52;color:#fff;padding:10px 15px;border-radius:12px;z-index:100;display:none;font-size:12px}.toast.show{display:block}
+button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-height:100vh}.top{background:var(--blue);color:white;padding:12px 14px;position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:11px;box-shadow:0 3px 14px #0b315b33}.logo{width:48px;height:48px;border-radius:13px;object-fit:cover;background:white}.brand{line-height:1.25}.brand b{font-size:17px}.brand small{display:block;opacity:.78;font-size:11px}.top .sp{flex:1}.main{padding:15px 13px 94px}.page{display:none}.page.active{display:block}.title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 0 14px}.title h1{font-size:22px;margin:0}.title p{font-size:12px;color:var(--muted);margin:4px 0 0}.btn{border:0;border-radius:12px;padding:11px 13px;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:white}.yellow{background:var(--yellow);color:#122b4d}.soft{background:#eaf0f7;color:var(--blue)}.danger{background:#fff0f2;color:var(--red)}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 5px 18px #1735540b}.stat span{display:block;font-size:11px;color:var(--muted)}.stat b{display:block;font-size:20px;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.section{display:flex;justify-content:space-between;align-items:center;margin:20px 0 9px}.section h2{font-size:16px;margin:0}.table{overflow:auto;background:white;border:1px solid var(--line);border-radius:15px}table{border-collapse:collapse;width:100%;min-width:820px}th,td{padding:11px 9px;border-bottom:1px solid #edf1f5;text-align:right;font-size:12px;white-space:nowrap}th{background:#f8fafc;color:#5f7082;font-size:11px}.status{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700}.paid{background:#e8f8ef;color:#11723f}.pending{background:#fff2d8;color:#996108}.partial{background:#eaf0ff;color:#365ba5}.unpaid{background:#ffedf0;color:#ab2940}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#5b6d81}.field input,.field select,.field textarea{border:1px solid #d9e2ec;border-radius:11px;padding:12px;background:white;outline:none;color:var(--text)}.field input:focus,.field select:focus,.field textarea:focus{border-color:#91acd0;box-shadow:0 0 0 3px #0c3b7812}.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;background:#f6f9fd;border:1px dashed #adc3df;border-radius:14px;padding:12px;margin-top:12px}.calc span{font-size:10px;color:var(--muted);display:block}.calc b{font-size:17px;color:var(--blue);display:block;margin-top:4px}.providerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.provider h3{margin:0 0 5px;font-size:16px}.provider p{font-size:11px;color:var(--muted);margin:4px 0}.miniGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}.mini{background:#f7f9fc;border-radius:10px;padding:8px}.mini span{font-size:9px;color:var(--muted);display:block}.mini b{font-size:12px;display:block;margin-top:3px}.actions{display:flex;gap:7px;margin-top:10px}.actions .btn{flex:1;padding:8px;font-size:11px}.search{width:100%;border:1px solid var(--line);background:white;border-radius:12px;padding:11px}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:40;padding-bottom:max(6px,env(safe-area-inset-bottom));box-shadow:0 -5px 18px #1639570d}.nav{border:0;background:white;padding:10px 3px;color:#718196;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}.nav b{font-size:18px}.nav.active{color:var(--blue);font-weight:800}.fab{position:fixed;left:14px;bottom:78px;width:58px;height:58px;border:0;border-radius:18px;background:var(--yellow);font-size:30px;color:#173251;box-shadow:0 8px 24px #0c3b7833;z-index:45}.modalBg{display:none;position:fixed;inset:0;background:#06182f70;z-index:80;align-items:flex-end;justify-content:center}.modalBg.show{display:flex}.modal{background:white;width:100%;max-width:700px;border-radius:23px 23px 0 0;padding:16px;max-height:88vh;overflow:auto}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalHead h3{margin:0}.close{border:0;background:#edf2f7;width:35px;height:35px;border-radius:50%;font-size:20px}.hint{font-size:11px;color:var(--muted);line-height:1.7}.toast{position:fixed;top:76px;left:50%;transform:translateX(-50%);background:#102d52;color:#fff;padding:10px 15px;border-radius:12px;z-index:100;display:none;font-size:12px}.toast.show{display:block}
 @media(max-width:800px){.cards{grid-template-columns:1fr 1fr}.cards .card:last-child{grid-column:1/-1}.providerGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.main{padding:13px 11px 94px}.title{align-items:flex-start;flex-direction:column}.title .btn{width:100%}.grid2{grid-template-columns:1fr}.field.full{grid-column:auto}.calc{grid-template-columns:1fr}.providerGrid{grid-template-columns:1fr}.cards{gap:8px}.card{padding:12px}.stat b{font-size:18px}}
 </style>
@@ -40,10 +40,10 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="grid2">
 <div class="field"><label>اسم العميل *</label><input id="cClient" placeholder="مثال: نورة أحمد"></div>
 <div class="field"><label>رقم العميل</label><input id="cPhone" inputmode="tel" placeholder="5xxxxxxx"></div>
-<div class="field"><label>الموظف المسؤول *</label><input id="cStaff" placeholder="اسم الموظف اللي استلم الحالة"></div>
+<div class="field"><label>الموظف المسؤول *</label><select id="cStaff"></select><div class="hint">هذا اسم موظف PawApp اللي استلم وسجّل الطلب. إذا الاسم مو موجود أضيفيه من صفحة الموظفون.</div></div>
 <div class="field"><label>التاريخ *</label><input id="cDate" type="date"></div>
-<div class="field"><label>مقدم الخدمة *</label><select id="cProvider" onchange="providerChanged()"></select></div>
-<div class="field"><label>الخدمة *</label><select id="cService"></select></div>
+<div class="field"><label>مقدم الخدمة *</label><select id="cProvider" onchange="providerChanged()"></select><div class="hint">العيادة / الشركة / الدكتور أو الفريلانسر اللي راح ينفذ الخدمة.</div></div>
+<div class="field"><label>الخدمة *</label><select id="cService"></select><div class="hint">الخدمات هنا تجي تلقائي من الخدمات المسجلة داخل مقدم الخدمة.</div></div>
 <div class="field"><label>سعر الخدمة (د.ك) *</label><input id="cAmount" type="number" min="0" step="0.001" placeholder="0.000" oninput="calcCase()"></div>
 <div class="field"><label>نسبة PawApp % *</label><input id="cCommission" type="number" min="0" max="100" step="0.1" oninput="calcCase()"></div>
 <div class="field"><label>هل العميل دفع؟</label><select id="cClientPaid"><option value="paid">نعم - مدفوع</option><option value="unpaid">لا - غير مدفوع</option></select></div>
@@ -62,6 +62,11 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div id="providerList" class="providerGrid" style="margin-top:11px"></div>
 </section>
 
+<section id="staff" class="page">
+<div class="title"><div><h1>الموظفون</h1><p>فريق PawApp اللي يستلم ويسجل طلبات العملاء</p></div><button class="btn primary" onclick="openStaff()">+ إضافة موظف</button></div>
+<div id="staffList" class="providerGrid"></div>
+</section>
+
 <section id="cases" class="page">
 <div class="title"><div><h1>العمليات والعملاء</h1><p>كل الحالات المسجلة وحالة التسوية</p></div><button class="btn yellow" onclick="openNewCase()">+ عميل جديد</button></div>
 <input id="caseSearch" class="search" placeholder="بحث باسم العميل، الشركة، الموظف أو Case ID..." oninput="renderCases()">
@@ -74,6 +79,7 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <button class="nav active" data-p="dashboard" onclick="showPage('dashboard')"><b>⌂</b>الرئيسية</button>
 <button class="nav" data-p="cases" onclick="showPage('cases')"><b>▤</b>العمليات</button>
 <button class="nav" data-p="providers" onclick="showPage('providers')"><b>♙</b>المقدمون</button>
+<button class="nav" data-p="staff" onclick="showPage('staff')"><b>♟</b>الموظفون</button>
 <button class="nav" data-p="newcase" onclick="openNewCase()"><b>＋</b>عميل جديد</button>
 </nav>
 
@@ -85,9 +91,15 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="field"><label>الاسم *</label><input id="pName" placeholder="اسم الشركة / الدكتور"></div>
 <div class="field"><label>رقم التواصل</label><input id="pPhone"></div>
 <div class="field"><label>نسبة PawApp الافتراضية %</label><input id="pCommission" type="number" value="7" step="0.1"></div>
-<div class="field full"><label>الخدمات</label><input id="pServices" placeholder="مثال: كشف، عملية، Grooming، Training"></div>
+<div class="field full"><label>الخدمات التي يقدمها هذا المقدم *</label><input id="pServices" placeholder="مثال: كشف، عملية، تطعيم أو Grooming، Training"><div class="hint">اكتبي كل خدمة وبينهم فاصلة. هذي هي الخدمات اللي راح تظهر بعدين عند إضافة العميل.</div></div>
 </div>
 <button class="btn primary" style="width:100%;margin-top:12px" onclick="saveProvider()">حفظ مقدم الخدمة</button>
+</div></div>
+
+<div id="staffModal" class="modalBg"><div class="modal">
+<div class="modalHead"><h3>إضافة موظف PawApp</h3><button class="close" onclick="closeModal('staffModal')">×</button></div>
+<div class="field"><label>اسم الموظف *</label><input id="staffName" placeholder="مثال: هبة"></div>
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveStaff()">حفظ الموظف</button>
 </div></div>
 
 <div id="settleModal" class="modalBg"><div class="modal">
@@ -105,16 +117,11 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div id="toast" class="toast"></div>
 
 <script>
-var KEY='pawapp_concierge_ops_v1';
+var KEY='pawapp_concierge_ops_v2';
 var seed={
- providers:[
-  {id:'P1',type:'company',category:'veterinary',name:'Happy Vet Clinic',phone:'',commission:7,services:['كشف','عملية','تطعيم']},
-  {id:'P2',type:'company',category:'services',name:'Paw Grooming',phone:'',commission:10,services:['Grooming','تنظيف','قص أظافر']},
-  {id:'P3',type:'freelancer',category:'',name:'Dr. Demo',phone:'',commission:12,services:['كشف منزلي','استشارة']}
- ],
- cases:[
-  {id:'PAW-0001',date:'2026-09-23',client:'عميل تجريبي',phone:'',staff:'Layal',providerId:'P1',service:'عملية',amount:100,commission:7,clientPaid:true,payMethod:'KNET',providerPaid:50,settlements:[],notes:''}
- ]
+ providers:[],
+ staff:['Bibi','Shahd','Habiba','Laura'],
+ cases:[]
 };
 var db;
 try{db=JSON.parse(localStorage.getItem(KEY)||'null')||seed}catch(e){db=seed}
@@ -128,7 +135,7 @@ function st(c){if(!c.clientPaid)return ['العميل لم يدفع','unpaid'];i
 function nextId(){var max=0;db.cases.forEach(function(c){var n=parseInt((c.id||'').replace('PAW-',''))||0;if(n>max)max=n});return 'PAW-'+String(max+1).padStart(4,'0')}
 function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(function(){e.classList.remove('show')},1700)}
 function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-p')===id)});window.scrollTo(0,0)}
-function openNewCase(){showPage('newcase');fillProviders();document.getElementById('cDate').value=new Date().toISOString().slice(0,10)}
+function openNewCase(){showPage('newcase');fillProviders();fillStaff();document.getElementById('cDate').value=new Date().toISOString().slice(0,10)}
 function renderDashboard(){
  var sales=0,p=0,d=0,paid=0;
  db.cases.forEach(function(c){sales+=c.amount;p+=paw(c);d+=due(c);paid+=(c.providerPaid||0)});
@@ -154,24 +161,29 @@ function renderCases(){
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
 function fillProviders(){var s=document.getElementById('cProvider');s.innerHTML='<option value="">اختاري مقدم الخدمة</option>';db.providers.forEach(function(p){s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>'});providerChanged()}
+function fillStaff(){var s=document.getElementById('cStaff');if(!s)return;s.innerHTML='<option value="">اختاري الموظف المسؤول</option>';db.staff.forEach(function(n){s.innerHTML+='<option>'+esc(n)+'</option>'})}
+function renderStaff(){var h='';db.staff.forEach(function(n){h+='<div class="card provider"><h3>'+esc(n)+'</h3><p>موظف PawApp / مسؤول عن تسجيل الطلبات</p><div class="actions"><button class="btn danger" onclick="deleteStaff(\''+esc(n).replace(/'/g,"\\'")+'\')">حذف</button></div></div>'});document.getElementById('staffList').innerHTML=h||'<div class="card">ما في موظفين مسجلين. أضيفي أسماء الفريق أول.</div>'}
+function openStaff(){document.getElementById('staffModal').classList.add('show')}
+function saveStaff(){var n=document.getElementById('staffName').value.trim();if(!n){alert('اكتبي اسم الموظف');return}if(db.staff.indexOf(n)>=0){alert('الاسم موجود من قبل');return}db.staff.push(n);document.getElementById('staffName').value='';closeModal('staffModal');persist();toast('تمت إضافة الموظف')}
+function deleteStaff(n){if(db.cases.some(function(c){return c.staff===n})){alert('ما نقدر نحذف الموظف لأن عنده عمليات مسجلة.');return}if(confirm('حذف الموظف '+n+'؟')){db.staff=db.staff.filter(function(x){return x!==n});persist()}}
 function providerChanged(){var p=byProvider(document.getElementById('cProvider').value),s=document.getElementById('cService');s.innerHTML='<option value="">اختاري الخدمة</option>';p.services.forEach(function(x){s.innerHTML+='<option>'+esc(x)+'</option>'});document.getElementById('cCommission').value=p.commission||0;calcCase()}
 function calcCase(){var a=Number(document.getElementById('cAmount').value||0),c=Number(document.getElementById('cCommission').value||0),x=a*c/100;document.getElementById('calcPaw').textContent=money(x);document.getElementById('calcDue').textContent=money(a-x);document.getElementById('calcRemain').textContent=money(a-x)}
 function saveCase(){
- var client=document.getElementById('cClient').value.trim(),staff=document.getElementById('cStaff').value.trim(),providerId=document.getElementById('cProvider').value,service=document.getElementById('cService').value,amount=Number(document.getElementById('cAmount').value||0),commission=Number(document.getElementById('cCommission').value||0);
+ var client=document.getElementById('cClient').value.trim(),staff=document.getElementById('cStaff').value,providerId=document.getElementById('cProvider').value,service=document.getElementById('cService').value,amount=Number(document.getElementById('cAmount').value||0),commission=Number(document.getElementById('cCommission').value||0);
  if(!client||!staff||!providerId||!service||amount<=0){alert('كملي اسم العميل، الموظف، مقدم الخدمة، الخدمة والمبلغ.');return}
  db.cases.push({id:nextId(),date:document.getElementById('cDate').value||new Date().toISOString().slice(0,10),client:client,phone:document.getElementById('cPhone').value.trim(),staff:staff,providerId:providerId,service:service,amount:amount,commission:commission,clientPaid:document.getElementById('cClientPaid').value==='paid',payMethod:document.getElementById('cPayMethod').value,providerPaid:0,settlements:[],notes:document.getElementById('cNotes').value.trim()});
- ['cClient','cPhone','cStaff','cAmount','cNotes'].forEach(function(id){document.getElementById(id).value=''});document.getElementById('cProvider').value='';providerChanged();persist();showPage('cases');toast('تم حفظ العميل والعملية');
+ ['cClient','cPhone','cAmount','cNotes'].forEach(function(id){document.getElementById(id).value=''});document.getElementById('cStaff').value='';document.getElementById('cProvider').value='';providerChanged();persist();showPage('cases');toast('تم حفظ العميل والعملية');
 }
 function openProvider(){document.getElementById('providerModal').classList.add('show')}
 function closeModal(id){document.getElementById(id).classList.remove('show')}
 function typeChanged(){document.getElementById('pCatWrap').style.display=document.getElementById('pType').value==='company'?'flex':'none'}
-function saveProvider(){var name=document.getElementById('pName').value.trim();if(!name){alert('اكتبي اسم مقدم الخدمة');return}var sv=document.getElementById('pServices').value.split(',').map(function(x){return x.trim()}).filter(Boolean);db.providers.push({id:'P'+Date.now(),type:document.getElementById('pType').value,category:document.getElementById('pCategory').value,name:name,phone:document.getElementById('pPhone').value.trim(),commission:Number(document.getElementById('pCommission').value||0),services:sv});document.getElementById('pName').value='';document.getElementById('pPhone').value='';document.getElementById('pServices').value='';closeModal('providerModal');persist();toast('تمت إضافة مقدم الخدمة')}
+function saveProvider(){var name=document.getElementById('pName').value.trim();if(!name){alert('اكتبي اسم مقدم الخدمة');return}var sv=document.getElementById('pServices').value.split(',').map(function(x){return x.trim()}).filter(Boolean);if(!sv.length){alert('أضيفي خدمة واحدة على الأقل لهذا المقدم');return}db.providers.push({id:'P'+Date.now(),type:document.getElementById('pType').value,category:document.getElementById('pCategory').value,name:name,phone:document.getElementById('pPhone').value.trim(),commission:Number(document.getElementById('pCommission').value||0),services:sv});document.getElementById('pName').value='';document.getElementById('pPhone').value='';document.getElementById('pServices').value='';closeModal('providerModal');persist();toast('تمت إضافة مقدم الخدمة')}
 function deleteProvider(id){if(db.cases.some(function(c){return c.providerId===id})){alert('ما نقدر نحذفه لأن عنده عمليات مسجلة.');return}if(confirm('حذف مقدم الخدمة؟')){db.providers=db.providers.filter(function(p){return p.id!==id});persist()}}
 function providerCases(id){var p=byProvider(id);showPage('cases');document.getElementById('caseSearch').value=p.name;renderCases()}
 function openSettlement(id){var c=db.cases.find(function(x){return x.id===id});if(!c)return;document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show')}
 function saveSettlement(){var id=document.getElementById('sCase').value,c=db.cases.find(function(x){return x.id===id}),a=Number(document.getElementById('sAmount').value||0);if(!c||a<=0){alert('أدخلي مبلغ صحيح');return}if(a>rem(c)+0.0001){alert('المبلغ أكبر من المتبقي للمقدم');return}c.providerPaid=(c.providerPaid||0)+a;c.settlements=c.settlements||[];c.settlements.push({amount:a,date:document.getElementById('sDate').value,ref:document.getElementById('sRef').value.trim(),method:document.getElementById('sMethod').value});document.getElementById('sRef').value='';closeModal('settleModal');persist();toast('تم تسجيل الدفعة')}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]})}
-function renderAll(){renderDashboard();renderProviders();renderCases();fillProviders()}
+function renderAll(){renderDashboard();renderProviders();renderStaff();renderCases();fillProviders();fillStaff()}
 document.getElementById('cDate').value=new Date().toISOString().slice(0,10);renderAll();
 </script>
 </body>
