@@ -105,7 +105,7 @@ function renderCases(){
  db.cases.slice().reverse().forEach(c=>{
   const pr=byProvider(c.providerId),hay=['PAW-'+String(c.id).padStart(4,'0'),c.client_name,c.client_phone,c.staff,pr.name,c.service].join(' ').toLowerCase(),s=st(c);
   if(q&&!hay.includes(q))return;if(sf!=='all'&&s[1]!==sf)return;if(pf!=='all'&&c.providerId!==pf)return;
-  h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">${c.client_paid?'دفعة للمقدم':'تأكيد دفع العميل'}</button></td></tr>`;
+  h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${planLabel(c)}${c.client_payment_note?'<br><span class="hint">'+esc(c.client_payment_note)+'</span>':''}</td><td>${money(clientPaidAmt(c))}</td><td>${money(clientRem(c))}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openClientPayment('${c.id}')">دفعة عميل</button></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة للمقدم</button></td></tr>`;
  });
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
