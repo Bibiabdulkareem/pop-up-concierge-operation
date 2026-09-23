@@ -50,8 +50,11 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="field"><label>طريقة حصة PawApp *</label><select id="cFeeType" onchange="toggleCasePricing()"><option value="percent">نسبة %</option><option value="fixed">سعر ثابت د.ك</option></select></div>
 <div class="field"><label id="cAmountLabel">إجمالي ما يدفعه العميل (د.ك) *</label><input id="cAmount" type="number" min="0" step="0.001" placeholder="0.000" oninput="calcCase()"></div>
 <div class="field"><label id="cCommissionLabel">نسبة PawApp % *</label><input id="cCommission" type="number" min="0" step="0.001" oninput="calcCase()"></div>
-<div class="field"><label>هل العميل دفع؟</label><select id="cClientPaid"><option value="paid">نعم - مدفوع</option><option value="unpaid">لا - غير مدفوع</option></select></div>
-<div class="field"><label>طريقة دفع العميل</label><select id="cPayMethod"><option>رابط دفع</option><option>KNET</option><option>نقدي</option><option>تحويل</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
+<div class="field"><label>خطة سداد العميل</label><select id="cPaymentPlan" onchange="togglePaymentPlan()"><option value="full">دفع كامل</option><option value="installment">أقساط</option><option value="later">يدفع لاحقًا</option></select></div>
+<div class="field" id="installmentsWrap" style="display:none"><label>عدد الأقساط</label><input id="cInstallments" type="number" min="2" step="1" placeholder="مثال: 3"></div>
+<div class="field"><label>هل دفع الآن؟</label><select id="cClientPaid"><option value="paid">نعم</option><option value="unpaid">لا</option></select></div>
+<div class="field"><label>طريقة دفع العميل</label><select id="cPayMethod"><option>رابط دفع</option><option>KNET</option><option>كاش</option><option>كريدت كارد</option><option>تحويل</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
+<div class="field full"><label>ملاحظة السداد</label><input id="cPaymentNote" placeholder="مثال: يدفع نهاية الشهر / أول قسط 20 د.ك"></div>
 <div class="field full"><label>ملاحظات</label><textarea id="cNotes" rows="3" placeholder="أي تفاصيل مهمة عن الحالة"></textarea></div>
 </div>
 <div class="calc" style="grid-template-columns:repeat(4,1fr)"><div><span>إجمالي العميل</span><b id="calcTotal">0.000 د.ك</b></div><div><span>حصة PawApp</span><b id="calcPaw">0.000 د.ك</b></div><div><span>مستحق مقدم الخدمة</span><b id="calcDue">0.000 د.ك</b></div><div><span>المتبقي بعد التسوية</span><b id="calcRemain">0.000 د.ك</b></div></div>
@@ -78,7 +81,7 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="field"><label>فلتر الحالة</label><select id="caseStatusFilter" onchange="renderCases()"><option value="all">كل الحالات</option><option value="pending">مستحق للمقدم</option><option value="partial">مسدد جزئي</option><option value="paid">مسدد للمقدم</option><option value="unpaid">العميل لم يدفع</option></select></div>
 <div class="field"><label>فلتر مقدم الخدمة</label><select id="caseProviderFilter" onchange="renderCases()"><option value="all">كل مقدمي الخدمة</option></select></div>
 </div>
-<div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي</th><th>الموظف</th><th>الحالة</th><th>دفع العميل</th><th>دفع للمقدم</th></tr></thead><tbody id="caseRows"></tbody></table></div>
+<div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>سداد العميل</th><th>دفع</th><th>متبقي عليه</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي للمقدم</th><th>الموظف</th><th>الحالة</th><th>دفعة عميل</th><th>دفعة للمقدم</th></tr></thead><tbody id="caseRows"></tbody></table></div>
 </section>
 </main>
 
@@ -112,11 +115,16 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 </div></div>
 
 <div id="clientPayModal" class="modalBg"><div class="modal">
-<div class="modalHead"><h3>تأكيد دفع العميل</h3><button class="close" onclick="closeModal('clientPayModal')">×</button></div>
+<div class="modalHead"><h3>تسجيل دفعة العميل</h3><button class="close" onclick="closeModal('clientPayModal')">×</button></div>
 <input id="cpCase" type="hidden">
-<div class="field"><label>طريقة دفع العميل</label><select id="cpMethod"><option>كاش</option><option>KNET</option><option>كريدت كارد</option><option>تحويل</option><option>رابط دفع</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
-<p class="hint">المبلغ الكامل معروف من العملية، لذلك ما تحتاجين تدخلينه مرة ثانية.</p>
-<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveClientPayment()">تأكيد أن العميل دفع بالكامل</button>
+<div class="grid2">
+<div class="field"><label>المبلغ المدفوع</label><input id="cpAmount" type="number" min="0" step="0.001"></div>
+<div class="field"><label>تاريخ الدفع</label><input id="cpDate" type="date"></div>
+<div class="field"><label>طريقة الدفع</label><select id="cpMethod"><option>كاش</option><option>KNET</option><option>كريدت كارد</option><option>تحويل</option><option>رابط دفع</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
+<div class="field"><label>ملاحظة</label><input id="cpNote" placeholder="اختياري"></div>
+</div>
+<p class="hint" id="cpSummary"></p>
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveClientPayment()">حفظ دفعة العميل</button>
 </div></div>
 
 <div id="settleModal" class="modalBg"><div class="modal">
