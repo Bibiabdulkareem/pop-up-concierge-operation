@@ -10,7 +10,10 @@ function byProvider(id){return db.providers.find(p=>p.id===id)||{name:'غير م
 function paw(c){return Number(c.pawapp_amount||0)}
 function due(c){return Number(c.provider_amount||0)}
 function rem(c){return Math.max(0,due(c)-Number(c.providerPaid||0))}
-function st(c){if(!c.client_paid)return ['العميل لم يدفع','unpaid'];if(rem(c)<=0.0001)return ['مسدد للمقدم','paid'];if(Number(c.providerPaid||0)>0)return ['مسدد جزئي','partial'];return ['مستحق للمقدم','pending']}
+function clientPaidAmt(c){const x=Number(c.clientPaidAmount||0);return x>0?x:(c.client_paid?Number(c.total_amount||0):0)}
+function clientRem(c){return Math.max(0,Number(c.total_amount||0)-clientPaidAmt(c))}
+function planLabel(c){if(c.client_payment_plan==='installment')return 'أقساط'+(c.installments_count?' ('+c.installments_count+')':'');if(c.client_payment_plan==='later')return 'لاحقًا';return 'دفع كامل'}
+function st(c){if(clientRem(c)>0.0001)return ['العميل لم يكمل السداد','unpaid'];if(rem(c)<=0.0001)return ['مسدد للمقدم','paid'];if(Number(c.providerPaid||0)>0)return ['مسدد جزئي','partial'];return ['مستحق للمقدم','pending']}
 
 async function api(path,opts={}){
  const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...opts,headers:{...H,...(opts.headers||{})}});
@@ -21,12 +24,13 @@ async function api(path,opts={}){
 
 async function loadData(){
  try{
-  const [employees,providers,services,cases,settlements]=await Promise.all([
+  const [employees,providers,services,cases,settlements,clientPayments]=await Promise.all([
    api('employees?select=*&order=name.asc'),
    api('providers?select=*&order=created_at.asc'),
    api('services?select=*&order=created_at.asc'),
    api('cases?select=*&order=created_at.asc'),
-   api('settlements?select=*&order=created_at.asc')
+   api('settlements?select=*&order=created_at.asc'),
+   api('client_payments?select=*&order=created_at.asc')
   ]);
   db.staff=employees||[];
   db.providers=(providers||[]).map(p=>({
@@ -42,7 +46,8 @@ async function loadData(){
    service:c.service_name,
    amount:Number(c.total_amount||0),
    staff:(employees||[]).find(e=>e.id===c.employee_id)?.name||'',
-   providerPaid:(settlements||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0)
+   providerPaid:(settlements||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0),
+   clientPaidAmount:(clientPayments||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0)
   }));
   renderAll();
  }catch(e){console.error(e);alert('تعذر تحميل البيانات المشتركة. جربي تحديث الصفحة.')}
