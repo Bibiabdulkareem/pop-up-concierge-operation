@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c3b78">
+<title>PawApp Concierge Operations</title>
+<style>
+:root{--blue:#0c3b78;--blue2:#082b59;--yellow:#ffd400;--bg:#f4f7fb;--white:#fff;--text:#10233d;--muted:#6f8094;--line:#e3e9f0;--green:#16834f;--red:#c9344b;--orange:#b9760c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--text)}
+button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-height:100vh}.top{background:var(--blue);color:white;padding:12px 14px;position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:11px;box-shadow:0 3px 14px #0b315b33}.logo{width:48px;height:48px;border-radius:13px;object-fit:cover;background:white}.brand{line-height:1.25}.brand b{font-size:17px}.brand small{display:block;opacity:.78;font-size:11px}.top .sp{flex:1}.main{padding:15px 13px 94px}.page{display:none}.page.active{display:block}.title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 0 14px}.title h1{font-size:22px;margin:0}.title p{font-size:12px;color:var(--muted);margin:4px 0 0}.btn{border:0;border-radius:12px;padding:11px 13px;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:white}.yellow{background:var(--yellow);color:#122b4d}.soft{background:#eaf0f7;color:var(--blue)}.danger{background:#fff0f2;color:var(--red)}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 5px 18px #1735540b}.stat span{display:block;font-size:11px;color:var(--muted)}.stat b{display:block;font-size:20px;margin-top:7px}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.section{display:flex;justify-content:space-between;align-items:center;margin:20px 0 9px}.section h2{font-size:16px;margin:0}.table{overflow:auto;background:white;border:1px solid var(--line);border-radius:15px}table{border-collapse:collapse;width:100%;min-width:820px}th,td{padding:11px 9px;border-bottom:1px solid #edf1f5;text-align:right;font-size:12px;white-space:nowrap}th{background:#f8fafc;color:#5f7082;font-size:11px}.status{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700}.paid{background:#e8f8ef;color:#11723f}.pending{background:#fff2d8;color:#996108}.partial{background:#eaf0ff;color:#365ba5}.unpaid{background:#ffedf0;color:#ab2940}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#5b6d81}.field input,.field select,.field textarea{border:1px solid #d9e2ec;border-radius:11px;padding:12px;background:white;outline:none;color:var(--text)}.field input:focus,.field select:focus,.field textarea:focus{border-color:#91acd0;box-shadow:0 0 0 3px #0c3b7812}.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;background:#f6f9fd;border:1px dashed #adc3df;border-radius:14px;padding:12px;margin-top:12px}.calc span{font-size:10px;color:var(--muted);display:block}.calc b{font-size:17px;color:var(--blue);display:block;margin-top:4px}.providerGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.provider h3{margin:0 0 5px;font-size:16px}.provider p{font-size:11px;color:var(--muted);margin:4px 0}.miniGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:11px}.mini{background:#f7f9fc;border-radius:10px;padding:8px}.mini span{font-size:9px;color:var(--muted);display:block}.mini b{font-size:12px;display:block;margin-top:3px}.actions{display:flex;gap:7px;margin-top:10px}.actions .btn{flex:1;padding:8px;font-size:11px}.search{width:100%;border:1px solid var(--line);background:white;border-radius:12px;padding:11px}.bottom{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:40;padding-bottom:max(6px,env(safe-area-inset-bottom));box-shadow:0 -5px 18px #1639570d}.nav{border:0;background:white;padding:10px 3px;color:#718196;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}.nav b{font-size:18px}.nav.active{color:var(--blue);font-weight:800}.fab{position:fixed;left:14px;bottom:78px;width:58px;height:58px;border:0;border-radius:18px;background:var(--yellow);font-size:30px;color:#173251;box-shadow:0 8px 24px #0c3b7833;z-index:45}.modalBg{display:none;position:fixed;inset:0;background:#06182f70;z-index:80;align-items:flex-end;justify-content:center}.modalBg.show{display:flex}.modal{background:white;width:100%;max-width:700px;border-radius:23px 23px 0 0;padding:16px;max-height:88vh;overflow:auto}.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modalHead h3{margin:0}.close{border:0;background:#edf2f7;width:35px;height:35px;border-radius:50%;font-size:20px}.hint{font-size:11px;color:var(--muted);line-height:1.7}.toast{position:fixed;top:76px;left:50%;transform:translateX(-50%);background:#102d52;color:#fff;padding:10px 15px;border-radius:12px;z-index:100;display:none;font-size:12px}.toast.show{display:block}
+@media(max-width:800px){.cards{grid-template-columns:1fr 1fr}.cards .card:last-child{grid-column:1/-1}.providerGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.main{padding:13px 11px 94px}.title{align-items:flex-start;flex-direction:column}.title .btn{width:100%}.grid2{grid-template-columns:1fr}.field.full{grid-column:auto}.calc{grid-template-columns:1fr}.providerGrid{grid-template-columns:1fr}.cards{gap:8px}.card{padding:12px}.stat b{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<img class="logo" alt="PawApp" src="data:image/jpeg;base64,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">
+<div class="brand"><b>PawApp Concierge</b><small>Operations System</small></div><div class="sp"></div>
+</header>
+
+<main class="main">
+<section id="dashboard" class="page active">
+<div class="title"><div><h1>لوحة التحكم</h1><p>المبالغ، عمولة PawApp، ومستحقات مقدمي الخدمة</p></div><button class="btn yellow" onclick="openNewCase()">+ عميل جديد</button></div>
+<div class="cards">
+<div class="card stat"><span>إجمالي الخدمات</span><b id="kSales" class="blue">0.000 د.ك</b></div>
+<div class="card stat"><span>حصة PawApp</span><b id="kPaw" class="green">0.000 د.ك</b></div>
+<div class="card stat"><span>مستحق للمقدمين</span><b id="kDue">0.000 د.ك</b></div>
+<div class="card stat"><span>تم دفعه</span><b id="kPaid" class="green">0.000 د.ك</b></div>
+<div class="card stat"><span>متبقي علينا</span><b id="kRemain" class="red">0.000 د.ك</b></div>
+</div>
+<div class="section"><h2>آخر العمليات</h2><button class="btn soft" onclick="showPage('cases')">عرض الكل</button></div>
+<div class="table"><table><thead><tr><th>رقم</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>المبلغ</th><th>PawApp</th><th>الموظف</th><th>الحالة</th></tr></thead><tbody id="recent"></tbody></table></div>
+</section>
+
+<section id="newcase" class="page">
+<div class="title"><div><h1>إضافة عميل / عملية</h1><p>عبّي البيانات، والحسابات تطلع تلقائي</p></div><button class="btn soft" onclick="showPage('dashboard')">رجوع</button></div>
+<div class="card">
+<div class="grid2">
+<div class="field"><label>اسم العميل *</label><input id="cClient" placeholder="مثال: نورة أحمد"></div>
+<div class="field"><label>رقم العميل</label><input id="cPhone" inputmode="tel" placeholder="5xxxxxxx"></div>
+<div class="field"><label>الموظف المسؤول *</label><input id="cStaff" placeholder="اسم الموظف اللي استلم الحالة"></div>
+<div class="field"><label>التاريخ *</label><input id="cDate" type="date"></div>
+<div class="field"><label>مقدم الخدمة *</label><select id="cProvider" onchange="providerChanged()"></select></div>
+<div class="field"><label>الخدمة *</label><select id="cService"></select></div>
+<div class="field"><label>سعر الخدمة (د.ك) *</label><input id="cAmount" type="number" min="0" step="0.001" placeholder="0.000" oninput="calcCase()"></div>
+<div class="field"><label>نسبة PawApp % *</label><input id="cCommission" type="number" min="0" max="100" step="0.1" oninput="calcCase()"></div>
+<div class="field"><label>هل العميل دفع؟</label><select id="cClientPaid"><option value="paid">نعم - مدفوع</option><option value="unpaid">لا - غير مدفوع</option></select></div>
+<div class="field"><label>طريقة دفع العميل</label><select id="cPayMethod"><option>رابط دفع</option><option>KNET</option><option>نقدي</option><option>تحويل</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
+<div class="field full"><label>ملاحظات</label><textarea id="cNotes" rows="3" placeholder="أي تفاصيل مهمة عن الحالة"></textarea></div>
+</div>
+<div class="calc"><div><span>حصة PawApp</span><b id="calcPaw">0.000 د.ك</b></div><div><span>مستحق مقدم الخدمة</span><b id="calcDue">0.000 د.ك</b></div><div><span>المتبقي بعد التسوية</span><b id="calcRemain">0.000 د.ك</b></div></div>
+<button class="btn primary" style="width:100%;margin-top:13px" onclick="saveCase()">حفظ العملية</button>
+<p class="hint">كل عملية تأخذ Case ID تلقائي، واسم الموظف يبقى مسجل عليها.</p>
+</div>
+</section>
+
+<section id="providers" class="page">
+<div class="title"><div><h1>مقدمو الخدمة</h1><p>Company أو Freelancer، مع الخدمات والنسبة</p></div><button class="btn primary" onclick="openProvider()">+ إضافة مقدم</button></div>
+<input id="providerSearch" class="search" placeholder="بحث..." oninput="renderProviders()">
+<div id="providerList" class="providerGrid" style="margin-top:11px"></div>
+</section>
+
+<section id="cases" class="page">
+<div class="title"><div><h1>العمليات والعملاء</h1><p>كل الحالات المسجلة وحالة التسوية</p></div><button class="btn yellow" onclick="openNewCase()">+ عميل جديد</button></div>
+<input id="caseSearch" class="search" placeholder="بحث باسم العميل، الشركة، الموظف أو Case ID..." oninput="renderCases()">
+<div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي</th><th>الموظف</th><th>الحالة</th><th></th></tr></thead><tbody id="caseRows"></tbody></table></div>
+</section>
+</main>
+
+<button class="fab" onclick="openNewCase()">+</button>
+<nav class="bottom">
+<button class="nav active" data-p="dashboard" onclick="showPage('dashboard')"><b>⌂</b>الرئيسية</button>
+<button class="nav" data-p="cases" onclick="showPage('cases')"><b>▤</b>العمليات</button>
+<button class="nav" data-p="providers" onclick="showPage('providers')"><b>♙</b>المقدمون</button>
+<button class="nav" data-p="newcase" onclick="openNewCase()"><b>＋</b>عميل جديد</button>
+</nav>
+
+<div id="providerModal" class="modalBg"><div class="modal">
+<div class="modalHead"><h3>إضافة مقدم خدمة</h3><button class="close" onclick="closeModal('providerModal')">×</button></div>
+<div class="grid2">
+<div class="field"><label>النوع</label><select id="pType" onchange="typeChanged()"><option value="company">Company</option><option value="freelancer">Freelancer</option></select></div>
+<div id="pCatWrap" class="field"><label>تصنيف الشركة</label><select id="pCategory"><option value="veterinary">Veterinary</option><option value="services">Services</option></select></div>
+<div class="field"><label>الاسم *</label><input id="pName" placeholder="اسم الشركة / الدكتور"></div>
+<div class="field"><label>رقم التواصل</label><input id="pPhone"></div>
+<div class="field"><label>نسبة PawApp الافتراضية %</label><input id="pCommission" type="number" value="7" step="0.1"></div>
+<div class="field full"><label>الخدمات</label><input id="pServices" placeholder="مثال: كشف، عملية، Grooming، Training"></div>
+</div>
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveProvider()">حفظ مقدم الخدمة</button>
+</div></div>
+
+<div id="settleModal" class="modalBg"><div class="modal">
+<div class="modalHead"><h3>تسجيل دفعة لمقدم الخدمة</h3><button class="close" onclick="closeModal('settleModal')">×</button></div>
+<input id="sCase" type="hidden">
+<div class="grid2">
+<div class="field"><label>المبلغ المدفوع</label><input id="sAmount" type="number" min="0" step="0.001"></div>
+<div class="field"><label>تاريخ الدفع</label><input id="sDate" type="date"></div>
+<div class="field"><label>رقم التحويل / المرجع</label><input id="sRef" placeholder="اختياري"></div>
+<div class="field"><label>طريقة الدفع</label><select id="sMethod"><option>تحويل بنكي</option><option>KNET</option><option>نقدي</option><option>أخرى</option></select></div>
+</div>
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveSettlement()">حفظ الدفعة</button>
+</div></div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+var KEY='pawapp_concierge_ops_v1';
+var seed={
+ providers:[
+  {id:'P1',type:'company',category:'veterinary',name:'Happy Vet Clinic',phone:'',commission:7,services:['كشف','عملية','تطعيم']},
+  {id:'P2',type:'company',category:'services',name:'Paw Grooming',phone:'',commission:10,services:['Grooming','تنظيف','قص أظافر']},
+  {id:'P3',type:'freelancer',category:'',name:'Dr. Demo',phone:'',commission:12,services:['كشف منزلي','استشارة']}
+ ],
+ cases:[
+  {id:'PAW-0001',date:'2026-09-23',client:'عميل تجريبي',phone:'',staff:'Layal',providerId:'P1',service:'عملية',amount:100,commission:7,clientPaid:true,payMethod:'KNET',providerPaid:50,settlements:[],notes:''}
+ ]
+};
+var db;
+try{db=JSON.parse(localStorage.getItem(KEY)||'null')||seed}catch(e){db=seed}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));renderAll()}
+function money(n){return (Number(n)||0).toFixed(3)+' د.ك'}
+function byProvider(id){for(var i=0;i<db.providers.length;i++)if(db.providers[i].id===id)return db.providers[i];return {name:'غير محدد',services:[],commission:0}}
+function paw(c){return c.amount*c.commission/100}
+function due(c){return c.amount-paw(c)}
+function rem(c){return Math.max(0,due(c)-(c.providerPaid||0))}
+function st(c){if(!c.clientPaid)return ['العميل لم يدفع','unpaid'];if(rem(c)<=0.0001)return ['مسدد للمقدم','paid'];if((c.providerPaid||0)>0)return ['مسدد جزئي','partial'];return ['مستحق للمقدم','pending']}
+function nextId(){var max=0;db.cases.forEach(function(c){var n=parseInt((c.id||'').replace('PAW-',''))||0;if(n>max)max=n});return 'PAW-'+String(max+1).padStart(4,'0')}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(function(){e.classList.remove('show')},1700)}
+function showPage(id){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-p')===id)});window.scrollTo(0,0)}
+function openNewCase(){showPage('newcase');fillProviders();document.getElementById('cDate').value=new Date().toISOString().slice(0,10)}
+function renderDashboard(){
+ var sales=0,p=0,d=0,paid=0;
+ db.cases.forEach(function(c){sales+=c.amount;p+=paw(c);d+=due(c);paid+=(c.providerPaid||0)});
+ document.getElementById('kSales').textContent=money(sales);document.getElementById('kPaw').textContent=money(p);document.getElementById('kDue').textContent=money(d);document.getElementById('kPaid').textContent=money(paid);document.getElementById('kRemain').textContent=money(Math.max(0,d-paid));
+ var a=db.cases.slice().reverse().slice(0,6),h='';
+ a.forEach(function(c){var pr=byProvider(c.providerId),s=st(c);h+='<tr><td>'+c.id+'</td><td>'+esc(c.client)+'</td><td>'+esc(pr.name)+'</td><td>'+esc(c.service)+'</td><td>'+money(c.amount)+'</td><td>'+money(paw(c))+'</td><td>'+esc(c.staff)+'</td><td><span class="status '+s[1]+'">'+s[0]+'</span></td></tr>'});
+ document.getElementById('recent').innerHTML=h||'<tr><td colspan="8">لا توجد عمليات</td></tr>';
+}
+function renderProviders(){
+ var q=(document.getElementById('providerSearch').value||'').toLowerCase(),h='';
+ db.providers.filter(function(p){return !q||p.name.toLowerCase().includes(q)}).forEach(function(p){
+  var cs=db.cases.filter(function(c){return c.providerId===p.id}),sales=0,r=0;cs.forEach(function(c){sales+=c.amount;r+=rem(c)});
+  var typ=p.type==='freelancer'?'Freelancer':(p.category==='veterinary'?'Company - Veterinary':'Company - Services');
+  h+='<div class="card provider"><h3>'+esc(p.name)+'</h3><p>'+typ+' • '+p.commission+'%</p><p>'+esc(p.services.join('، '))+'</p><div class="miniGrid"><div class="mini"><span>العمليات</span><b>'+cs.length+'</b></div><div class="mini"><span>الإجمالي</span><b>'+money(sales)+'</b></div><div class="mini"><span>متبقي</span><b>'+money(r)+'</b></div></div><div class="actions"><button class="btn soft" onclick="providerCases(\''+p.id+'\')">العمليات</button><button class="btn danger" onclick="deleteProvider(\''+p.id+'\')">حذف</button></div></div>';
+ });
+ document.getElementById('providerList').innerHTML=h||'<div class="card">لا توجد نتائج</div>';
+}
+function renderCases(){
+ var q=(document.getElementById('caseSearch').value||'').toLowerCase(),h='';
+ db.cases.slice().reverse().forEach(function(c){var pr=byProvider(c.providerId),hay=[c.id,c.client,c.phone,c.staff,pr.name,c.service].join(' ').toLowerCase();if(q&&!hay.includes(q))return;var s=st(c);
+ h+='<tr><td>'+c.id+'</td><td>'+c.date+'</td><td>'+esc(c.client)+'</td><td>'+esc(pr.name)+'</td><td>'+esc(c.service)+'</td><td>'+money(c.amount)+'</td><td>'+money(paw(c))+'</td><td>'+money(due(c))+'</td><td>'+money(c.providerPaid||0)+'</td><td>'+money(rem(c))+'</td><td>'+esc(c.staff)+'</td><td><span class="status '+s[1]+'">'+s[0]+'</span></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement(\''+c.id+'\')">دفعة</button></td></tr>';
+ });
+ document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
+}
+function fillProviders(){var s=document.getElementById('cProvider');s.innerHTML='<option value="">اختاري مقدم الخدمة</option>';db.providers.forEach(function(p){s.innerHTML+='<option value="'+p.id+'">'+esc(p.name)+'</option>'});providerChanged()}
+function providerChanged(){var p=byProvider(document.getElementById('cProvider').value),s=document.getElementById('cService');s.innerHTML='<option value="">اختاري الخدمة</option>';p.services.forEach(function(x){s.innerHTML+='<option>'+esc(x)+'</option>'});document.getElementById('cCommission').value=p.commission||0;calcCase()}
+function calcCase(){var a=Number(document.getElementById('cAmount').value||0),c=Number(document.getElementById('cCommission').value||0),x=a*c/100;document.getElementById('calcPaw').textContent=money(x);document.getElementById('calcDue').textContent=money(a-x);document.getElementById('calcRemain').textContent=money(a-x)}
+function saveCase(){
+ var client=document.getElementById('cClient').value.trim(),staff=document.getElementById('cStaff').value.trim(),providerId=document.getElementById('cProvider').value,service=document.getElementById('cService').value,amount=Number(document.getElementById('cAmount').value||0),commission=Number(document.getElementById('cCommission').value||0);
+ if(!client||!staff||!providerId||!service||amount<=0){alert('كملي اسم العميل، الموظف، مقدم الخدمة، الخدمة والمبلغ.');return}
+ db.cases.push({id:nextId(),date:document.getElementById('cDate').value||new Date().toISOString().slice(0,10),client:client,phone:document.getElementById('cPhone').value.trim(),staff:staff,providerId:providerId,service:service,amount:amount,commission:commission,clientPaid:document.getElementById('cClientPaid').value==='paid',payMethod:document.getElementById('cPayMethod').value,providerPaid:0,settlements:[],notes:document.getElementById('cNotes').value.trim()});
+ ['cClient','cPhone','cStaff','cAmount','cNotes'].forEach(function(id){document.getElementById(id).value=''});document.getElementById('cProvider').value='';providerChanged();persist();showPage('cases');toast('تم حفظ العميل والعملية');
+}
+function openProvider(){document.getElementById('providerModal').classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function typeChanged(){document.getElementById('pCatWrap').style.display=document.getElementById('pType').value==='company'?'flex':'none'}
+function saveProvider(){var name=document.getElementById('pName').value.trim();if(!name){alert('اكتبي اسم مقدم الخدمة');return}var sv=document.getElementById('pServices').value.split(',').map(function(x){return x.trim()}).filter(Boolean);db.providers.push({id:'P'+Date.now(),type:document.getElementById('pType').value,category:document.getElementById('pCategory').value,name:name,phone:document.getElementById('pPhone').value.trim(),commission:Number(document.getElementById('pCommission').value||0),services:sv});document.getElementById('pName').value='';document.getElementById('pPhone').value='';document.getElementById('pServices').value='';closeModal('providerModal');persist();toast('تمت إضافة مقدم الخدمة')}
+function deleteProvider(id){if(db.cases.some(function(c){return c.providerId===id})){alert('ما نقدر نحذفه لأن عنده عمليات مسجلة.');return}if(confirm('حذف مقدم الخدمة؟')){db.providers=db.providers.filter(function(p){return p.id!==id});persist()}}
+function providerCases(id){var p=byProvider(id);showPage('cases');document.getElementById('caseSearch').value=p.name;renderCases()}
+function openSettlement(id){var c=db.cases.find(function(x){return x.id===id});if(!c)return;document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show')}
+function saveSettlement(){var id=document.getElementById('sCase').value,c=db.cases.find(function(x){return x.id===id}),a=Number(document.getElementById('sAmount').value||0);if(!c||a<=0){alert('أدخلي مبلغ صحيح');return}if(a>rem(c)+0.0001){alert('المبلغ أكبر من المتبقي للمقدم');return}c.providerPaid=(c.providerPaid||0)+a;c.settlements=c.settlements||[];c.settlements.push({amount:a,date:document.getElementById('sDate').value,ref:document.getElementById('sRef').value.trim(),method:document.getElementById('sMethod').value});document.getElementById('sRef').value='';closeModal('settleModal');persist();toast('تم تسجيل الدفعة')}
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]})}
+function renderAll(){renderDashboard();renderProviders();renderCases();fillProviders()}
+document.getElementById('cDate').value=new Date().toISOString().slice(0,10);renderAll();
+</script>
+</body>
+</html>
