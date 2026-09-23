@@ -24,13 +24,14 @@ async function api(path,opts={}){
 
 async function loadData(){
  try{
-  const [employees,providers,services,cases,settlements,clientPayments]=await Promise.all([
+  const [employees,providers,services,cases,settlements,clientPayments,installmentSchedule]=await Promise.all([
    api('employees?select=*&order=name.asc'),
    api('providers?select=*&order=created_at.asc'),
    api('services?select=*&order=created_at.asc'),
    api('cases?select=*&order=created_at.asc'),
    api('settlements?select=*&order=created_at.asc'),
-   api('client_payments?select=*&order=created_at.asc')
+   api('client_payments?select=*&order=created_at.asc'),
+   api('installment_schedule?select=*&order=due_date.asc')
   ]);
   db.staff=employees||[];
   db.providers=(providers||[]).map(p=>({
@@ -47,7 +48,8 @@ async function loadData(){
    amount:Number(c.total_amount||0),
    staff:(employees||[]).find(e=>e.id===c.employee_id)?.name||'',
    providerPaid:(settlements||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0),
-   clientPaidAmount:(clientPayments||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0)
+   clientPaidAmount:(clientPayments||[]).filter(s=>Number(s.case_id)===Number(c.id)).reduce((a,s)=>a+Number(s.amount||0),0),
+   schedule:(installmentSchedule||[]).filter(s=>Number(s.case_id)===Number(c.id))
   }));
   renderAll();
  }catch(e){console.error(e);alert('تعذر تحميل البيانات المشتركة. جربي تحديث الصفحة.')}
