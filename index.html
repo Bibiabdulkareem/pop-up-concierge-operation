@@ -78,7 +78,7 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="field"><label>فلتر الحالة</label><select id="caseStatusFilter" onchange="renderCases()"><option value="all">كل الحالات</option><option value="pending">مستحق للمقدم</option><option value="partial">مسدد جزئي</option><option value="paid">مسدد للمقدم</option><option value="unpaid">العميل لم يدفع</option></select></div>
 <div class="field"><label>فلتر مقدم الخدمة</label><select id="caseProviderFilter" onchange="renderCases()"><option value="all">كل مقدمي الخدمة</option></select></div>
 </div>
-<div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي</th><th>الموظف</th><th>الحالة</th><th></th></tr></thead><tbody id="caseRows"></tbody></table></div>
+<div class="table" style="margin-top:11px"><table><thead><tr><th>Case ID</th><th>التاريخ</th><th>العميل</th><th>المقدم</th><th>الخدمة</th><th>السعر</th><th>PawApp</th><th>للمقدم</th><th>دفعنا</th><th>متبقي</th><th>الموظف</th><th>الحالة</th><th>دفع العميل</th><th>دفع للمقدم</th></tr></thead><tbody id="caseRows"></tbody></table></div>
 </section>
 </main>
 
@@ -109,6 +109,14 @@ button,input,select,textarea{font:inherit}.app{max-width:1100px;margin:auto;min-
 <div class="modalHead"><h3>إضافة موظف PawApp</h3><button class="close" onclick="closeModal('staffModal')">×</button></div>
 <div class="field"><label>اسم الموظف *</label><input id="staffName" placeholder="مثال: هبة"></div>
 <button class="btn primary" style="width:100%;margin-top:12px" onclick="saveStaff()">حفظ الموظف</button>
+</div></div>
+
+<div id="clientPayModal" class="modalBg"><div class="modal">
+<div class="modalHead"><h3>تأكيد دفع العميل</h3><button class="close" onclick="closeModal('clientPayModal')">×</button></div>
+<input id="cpCase" type="hidden">
+<div class="field"><label>طريقة دفع العميل</label><select id="cpMethod"><option>كاش</option><option>KNET</option><option>كريدت كارد</option><option>تحويل</option><option>رابط دفع</option><option>دفع للعيادة/المقدم مباشرة</option></select></div>
+<p class="hint">المبلغ الكامل معروف من العملية، لذلك ما تحتاجين تدخلينه مرة ثانية.</p>
+<button class="btn primary" style="width:100%;margin-top:12px" onclick="saveClientPayment()">تأكيد أن العميل دفع بالكامل</button>
 </div></div>
 
 <div id="settleModal" class="modalBg"><div class="modal">
