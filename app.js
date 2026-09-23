@@ -100,7 +100,7 @@ function renderCases(){
  db.cases.slice().reverse().forEach(c=>{
   const pr=byProvider(c.providerId),hay=['PAW-'+String(c.id).padStart(4,'0'),c.client_name,c.client_phone,c.staff,pr.name,c.service].join(' ').toLowerCase(),s=st(c);
   if(q&&!hay.includes(q))return;if(sf!=='all'&&s[1]!==sf)return;if(pf!=='all'&&c.providerId!==pf)return;
-  h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">دفعة</button></td></tr>`;
+  h+=`<tr><td>PAW-${String(c.id).padStart(4,'0')}</td><td>${c.service_date}</td><td>${esc(c.client_name)}</td><td>${esc(pr.name)}</td><td>${esc(c.service)}</td><td>${money(c.amount)}</td><td>${money(paw(c))}</td><td>${money(due(c))}</td><td>${money(c.providerPaid||0)}</td><td>${money(rem(c))}</td><td>${esc(c.staff)}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td><button class="btn soft" style="padding:7px" onclick="openSettlement('${c.id}')">${c.client_paid?'دفعة للمقدم':'تأكيد دفع العميل'}</button></td></tr>`;
  });
  document.getElementById('caseRows').innerHTML=h||'<tr><td colspan="13">لا توجد عمليات</td></tr>';
 }
@@ -174,7 +174,17 @@ function exportProviderReport(id){
  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=('PawApp-'+p.name+'-report.csv').replace(/\s+/g,'-');document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-function openSettlement(id){const c=db.cases.find(x=>String(x.id)===String(id));if(!c)return;document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show')}
+async function openSettlement(id){
+ const c=db.cases.find(x=>String(x.id)===String(id));if(!c)return;
+ if(!c.client_paid){
+  const ok=confirm('تأكيد أن العميل دفع المبلغ كامل؟');if(!ok)return;
+  const method=prompt('طريقة دفع العميل: كاش / KNET / كريدت كارد / تحويل','KNET')||'KNET';
+  try{await api('cases?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({client_paid:true,payment_method:method})});await loadData();toast('تم تأكيد دفع العميل بالكامل')}catch(e){console.error(e);alert('تعذر تحديث دفع العميل')}
+  return;
+ }
+ if(rem(c)<=0.0001){alert('مستحق مقدم الخدمة مسدد بالكامل');return}
+ document.getElementById('sCase').value=id;document.getElementById('sAmount').value=rem(c).toFixed(3);document.getElementById('sDate').value=new Date().toISOString().slice(0,10);document.getElementById('settleModal').classList.add('show');
+}
 async function saveSettlement(){
  const id=document.getElementById('sCase').value,c=db.cases.find(x=>String(x.id)===String(id)),a=Number(document.getElementById('sAmount').value||0);
  if(!c||a<=0){alert('أدخلي مبلغ صحيح');return}if(a>rem(c)+0.0001){alert('المبلغ أكبر من المتبقي للمقدم');return}
